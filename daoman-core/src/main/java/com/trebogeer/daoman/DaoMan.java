@@ -87,6 +87,12 @@ public class DaoMan {
     @Option(name = "--stored-procedures", aliases = {"-sp"}/*, multiValued = true*/)
     private List<String> storedProcs = newArrayList();
 
+    @Option(name = "--out-parameter-size", aliases = "-ops")
+    private String outParamSize = "n";
+
+    @Option(name = "--error-code-name", aliases = "-ecn")
+    private String errorCodeName = "";
+
 
     private DaoMan() {
     }
@@ -243,10 +249,20 @@ public class DaoMan {
                                     }
                                 }
                             }else {
-                                System.out.println(key + " stored procedure returned error code : " +stmt.getInt(1));
+//                                switch (outParamPos.size()){
+//                                    case 0: System.out.println(key + " stored procedure has not out params"); break;
+//                                    case 1: Unit a = new Unit<Object>(stmt.getInt(outParamPos.get(0)));
+//                                        System.out.println(key + " stored procedure returned error code : 1: " + a.getValue0().toString());  break;
+//                                    case 2: Pair b = new Pair<Object, Object>(stmt.getInt(outParamPos.get(0)), stmt.getInt(outParamPos.get(1)));
+//                                        System.out.println(key + " stored procedure returned error code : 1: " + b.getValue0().toString() + " 2: " + b.getValue1().toString()); break;
+//                                    case 3: Triplet c = new Triplet<Object, Object, Object>(stmt.getInt(outParamPos.get(0)), stmt.getInt(outParamPos.get(1)), stmt.getInt(outParamPos.get(2)));
+//                                        System.out.println(key + " stored procedure returned 1: " + c.getValue0().toString() + " 2: " + c.getValue1().toString() + " 3: " + c.getValue2().toString()); break;
+//                                }
+ //                               System.out.println(key + " stored procedure returned error code : " +stmt.getInt(1));
                             }
 
                         } catch (Exception e){
+                            System.out.println("Broken stored procedure: " + storedProc);
                             e.printStackTrace();
                         }finally {
                             JDBCUtil.close(rs, stmt);
@@ -311,7 +327,7 @@ public class DaoMan {
                     Collection<SQLParam> outParams = Collections2.filter(inputParameters, new Predicate<SQLParam>() {
                         @Override
                         public boolean apply(final SQLParam input) {
-                            return input.isInOut() || (input.isOut() && !input.getName().equals("error_code"));
+                            return input.isInOut() || (input.isOut() && !input.getName().equals(errorCodeName));
                         }
                     });
                     // assuming that if a stored procedure has a list of output parameters it won't have a resultset

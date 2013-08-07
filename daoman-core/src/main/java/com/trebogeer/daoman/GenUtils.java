@@ -17,7 +17,14 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import org.javatuples.Decade;
+import org.javatuples.Ennead;
+import org.javatuples.Octet;
 import org.javatuples.Pair;
+import org.javatuples.Quartet;
+import org.javatuples.Quintet;
+import org.javatuples.Septet;
+import org.javatuples.Sextet;
 import org.javatuples.Triplet;
 
 import javax.sql.DataSource;
@@ -129,7 +136,7 @@ public final class GenUtils {
                         } else {
                             try {
                                 JDefinedClass mapper1 = codeModel._class(JMod.FINAL | JMod.PUBLIC, getMapperName(packageName, storedProcedureName, schema), ClassType.CLASS);
-                                JClass rowMapper = codeModel.ref(/*SimpleRowMapper.class*/"");
+                                JClass rowMapper = codeModel.ref(RowMapper.class);
                                 rowMapper = rowMapper.narrow(clazzResult);
                                 mapper1._extends(rowMapper);
                                 mapperBody(models, mapper1, packageName, schema, storedProcedureName, resultSet);
@@ -193,7 +200,95 @@ public final class GenUtils {
 
             JClass ret = codeModel.ref(Triplet.class);
             returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType());
-        } else if (outParams.size() > 3) {
+        } else if (outParams.size() == 4) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+            SQLParam third = it.next();
+            SQLParam forth = it.next();
+
+            JClass ret = codeModel.ref(Quartet.class);
+            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType());
+        } else if (outParams.size() == 5) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+            SQLParam third = it.next();
+            SQLParam forth = it.next();
+            SQLParam fifth = it.next();
+
+            JClass ret = codeModel.ref(Quintet.class);
+            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType());
+        } else if (outParams.size() == 6) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+            SQLParam third = it.next();
+            SQLParam forth = it.next();
+            SQLParam fifth = it.next();
+            SQLParam sixth = it.next();
+
+            JClass ret = codeModel.ref(Sextet.class);
+            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+                    sixth.getJavaType());
+        } else if (outParams.size() == 7) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+            SQLParam third = it.next();
+            SQLParam forth = it.next();
+            SQLParam fifth = it.next();
+            SQLParam sixth = it.next();
+            SQLParam seventh = it.next();
+
+            JClass ret = codeModel.ref(Septet.class);
+            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+                    sixth.getJavaType(), seventh.getJavaType());
+        } else if (outParams.size() == 8) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+            SQLParam third = it.next();
+            SQLParam forth = it.next();
+            SQLParam fifth = it.next();
+            SQLParam sixth = it.next();
+            SQLParam seventh = it.next();
+            SQLParam eighth = it.next();
+
+            JClass ret = codeModel.ref(Octet.class);
+            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+                    sixth.getJavaType(), seventh.getJavaType(),eighth.getJavaType());
+        } else if (outParams.size() == 9) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+            SQLParam third = it.next();
+            SQLParam forth = it.next();
+            SQLParam fifth = it.next();
+            SQLParam sixth = it.next();
+            SQLParam seventh = it.next();
+            SQLParam eighth = it.next();
+            SQLParam ninth = it.next();
+
+            JClass ret = codeModel.ref(Ennead.class);
+            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+                    sixth.getJavaType(), seventh.getJavaType(), eighth.getJavaType(),ninth.getJavaType());
+        } else if (outParams.size() == 10) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+            SQLParam third = it.next();
+            SQLParam forth = it.next();
+            SQLParam fifth = it.next();
+            SQLParam sixth = it.next();
+            SQLParam seventh = it.next();
+            SQLParam eighth = it.next();
+            SQLParam ninth = it.next();
+            SQLParam tenth = it.next();
+
+            JClass ret = codeModel.ref(Decade.class);
+            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+                    sixth.getJavaType(), seventh.getJavaType(), eighth.getJavaType(), ninth.getJavaType(),tenth.getJavaType());
             // TODO produce return bean
             // continue;
             // Current gen.a implementation does not support more than 3 out/inout parameters
