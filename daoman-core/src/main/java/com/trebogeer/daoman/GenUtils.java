@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -182,119 +183,132 @@ public final class GenUtils {
 
     public static JType notCollectionReturnType(final Collection<SQLParam> outParams, final JCodeModel codeModel) {
         JType returnType = null;
-        if (outParams.size() == 1) {
-            SQLParam retParam = outParams.iterator().next();
-            returnType = codeModel.ref(retParam.getJavaType());
-        } else if (outParams.size() == 2) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
+        List<Class<?> > params = getSQLParams(outParams.iterator());
+        JClass ret = codeModel.ref(Decade.class);
+        returnType = ret.narrow((JClass) params);
 
-            JClass ret = codeModel.ref(Pair.class);
-            returnType = ret.narrow(codeModel.ref(first.getJavaType()), codeModel.ref(second.getJavaType()));
-        } else if (outParams.size() == 3) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
-            SQLParam third = it.next();
 
-            JClass ret = codeModel.ref(Triplet.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType());
-        } else if (outParams.size() == 4) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
-            SQLParam third = it.next();
-            SQLParam forth = it.next();
-
-            JClass ret = codeModel.ref(Quartet.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType());
-        } else if (outParams.size() == 5) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
-            SQLParam third = it.next();
-            SQLParam forth = it.next();
-            SQLParam fifth = it.next();
-
-            JClass ret = codeModel.ref(Quintet.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType());
-        } else if (outParams.size() == 6) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
-            SQLParam third = it.next();
-            SQLParam forth = it.next();
-            SQLParam fifth = it.next();
-            SQLParam sixth = it.next();
-
-            JClass ret = codeModel.ref(Sextet.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-                    sixth.getJavaType());
-        } else if (outParams.size() == 7) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
-            SQLParam third = it.next();
-            SQLParam forth = it.next();
-            SQLParam fifth = it.next();
-            SQLParam sixth = it.next();
-            SQLParam seventh = it.next();
-
-            JClass ret = codeModel.ref(Septet.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-                    sixth.getJavaType(), seventh.getJavaType());
-        } else if (outParams.size() == 8) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
-            SQLParam third = it.next();
-            SQLParam forth = it.next();
-            SQLParam fifth = it.next();
-            SQLParam sixth = it.next();
-            SQLParam seventh = it.next();
-            SQLParam eighth = it.next();
-
-            JClass ret = codeModel.ref(Octet.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-                    sixth.getJavaType(), seventh.getJavaType(),eighth.getJavaType());
-        } else if (outParams.size() == 9) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
-            SQLParam third = it.next();
-            SQLParam forth = it.next();
-            SQLParam fifth = it.next();
-            SQLParam sixth = it.next();
-            SQLParam seventh = it.next();
-            SQLParam eighth = it.next();
-            SQLParam ninth = it.next();
-
-            JClass ret = codeModel.ref(Ennead.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-                    sixth.getJavaType(), seventh.getJavaType(), eighth.getJavaType(),ninth.getJavaType());
-        } else if (outParams.size() == 10) {
-            Iterator<SQLParam> it = outParams.iterator();
-            SQLParam first = it.next();
-            SQLParam second = it.next();
-            SQLParam third = it.next();
-            SQLParam forth = it.next();
-            SQLParam fifth = it.next();
-            SQLParam sixth = it.next();
-            SQLParam seventh = it.next();
-            SQLParam eighth = it.next();
-            SQLParam ninth = it.next();
-            SQLParam tenth = it.next();
-
-            JClass ret = codeModel.ref(Decade.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-                    sixth.getJavaType(), seventh.getJavaType(), eighth.getJavaType(), ninth.getJavaType(),tenth.getJavaType());
+//        if (outParams.size() == 1) {
+//            SQLParam retParam = outParams.iterator().next();
+//            returnType = codeModel.ref(retParam.getJavaType());
+//        } else if (outParams.size() == 2) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//
+//            JClass ret = codeModel.ref(Pair.class);
+//            returnType = ret.narrow(codeModel.ref(first.getJavaType()), codeModel.ref(second.getJavaType()));
+//        } else if (outParams.size() == 3) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//            SQLParam third = it.next();
+//
+//            JClass ret = codeModel.ref(Triplet.class);
+//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType());
+//        } else if (outParams.size() == 4) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//            SQLParam third = it.next();
+//            SQLParam forth = it.next();
+//
+//            JClass ret = codeModel.ref(Quartet.class);
+//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType());
+//        } else if (outParams.size() == 5) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//            SQLParam third = it.next();
+//            SQLParam forth = it.next();
+//            SQLParam fifth = it.next();
+//
+//            JClass ret = codeModel.ref(Quintet.class);
+//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType());
+//        } else if (outParams.size() == 6) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//            SQLParam third = it.next();
+//            SQLParam forth = it.next();
+//            SQLParam fifth = it.next();
+//            SQLParam sixth = it.next();
+//
+//            JClass ret = codeModel.ref(Sextet.class);
+//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+//                    sixth.getJavaType());
+//        } else if (outParams.size() == 7) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//            SQLParam third = it.next();
+//            SQLParam forth = it.next();
+//            SQLParam fifth = it.next();
+//            SQLParam sixth = it.next();
+//            SQLParam seventh = it.next();
+//
+//            JClass ret = codeModel.ref(Septet.class);
+//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+//                    sixth.getJavaType(), seventh.getJavaType());
+//        } else if (outParams.size() == 8) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//            SQLParam third = it.next();
+//            SQLParam forth = it.next();
+//            SQLParam fifth = it.next();
+//            SQLParam sixth = it.next();
+//            SQLParam seventh = it.next();
+//            SQLParam eighth = it.next();
+//
+//            JClass ret = codeModel.ref(Octet.class);
+//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+//                    sixth.getJavaType(), seventh.getJavaType(),eighth.getJavaType());
+//        } else if (outParams.size() == 9) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//            SQLParam third = it.next();
+//            SQLParam forth = it.next();
+//            SQLParam fifth = it.next();
+//            SQLParam sixth = it.next();
+//            SQLParam seventh = it.next();
+//            SQLParam eighth = it.next();
+//            SQLParam ninth = it.next();
+//
+//            JClass ret = codeModel.ref(Ennead.class);
+//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+//                    sixth.getJavaType(), seventh.getJavaType(), eighth.getJavaType(),ninth.getJavaType());
+//        } else if (outParams.size() == 10) {
+//            Iterator<SQLParam> it = outParams.iterator();
+//            SQLParam first = it.next();
+//            SQLParam second = it.next();
+//            SQLParam third = it.next();
+//            SQLParam forth = it.next();
+//            SQLParam fifth = it.next();
+//            SQLParam sixth = it.next();
+//            SQLParam seventh = it.next();
+//            SQLParam eighth = it.next();
+//            SQLParam ninth = it.next();
+//            SQLParam tenth = it.next();
+//
+//            JClass ret = codeModel.ref(Decade.class);
+//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
+//                    sixth.getJavaType(), seventh.getJavaType(), eighth.getJavaType(), ninth.getJavaType(),tenth.getJavaType());
             // TODO produce return bean
             // continue;
             // Current gen.a implementation does not support more than 3 out/inout parameters
             // throw new XRuntime("Current gen.a implementation does not support more than 3 out/inout parameters");
-        }
+  //      }
         return returnType;
+    }
+
+    private static List<Class<?> > getSQLParams(Iterator<SQLParam> it){
+        List<Class<?> > result = new LinkedList<Class<?>>();
+        while (it.hasNext()){
+            result.add(it.next().getJavaType());
+        }
+        return result;
     }
 
     public static Pair<JType, JClass> collectionResultModelMapper(
