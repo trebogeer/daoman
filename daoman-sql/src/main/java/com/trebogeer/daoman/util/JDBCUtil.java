@@ -33,19 +33,19 @@ public class JDBCUtil {
             if (resultset != null)
                 resultset.close();
         } catch (final Throwable sqlexception) {
-
+            // nothing to do
         }
         try {
             if (statement != null)
                 statement.close();
         } catch (final Throwable sqlexception1) {
-
+            // nothing to do
         }
         try {
             if (connection != null)
                 connection.close();
         } catch (final Throwable sqlexception2) {
-
+            // nothing to do
         }
     }
 

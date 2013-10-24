@@ -36,6 +36,8 @@
         <guava.v>14.0.1</guava.v>
         <javatuples.v>1.2</javatuples.v>
         <spring-jdbc.v>3.2.3.RELEASE</spring-jdbc.v>
+        <lombok.v>1.12.2</lombok.v>
+        <ojdbc14.v>10.2.0.4.0</ojdbc14.v>
     </properties>
 
     <dependencyManagement>
@@ -57,17 +59,29 @@
                 <version>${args4j.v}</version>
             </dependency>
             <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.v}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>${testng.v}</version>
                 <scope>test</scope>
             </dependency>
+            <!-- JDBC Drivers -->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.v}</version>
                 <!--<scope>runtime</scope>-->
             </dependency>
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc14</artifactId>
+                <version>${ojdbc14.v}</version>
+            </dependency>
+            <!-- JDBC Drivers -->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
