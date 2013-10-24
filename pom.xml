@@ -37,7 +37,8 @@
         <javatuples.v>1.2</javatuples.v>
         <spring-jdbc.v>3.2.3.RELEASE</spring-jdbc.v>
         <lombok.v>1.12.2</lombok.v>
-        <ojdbc14.v>10.2.0.4.0</ojdbc14.v>
+        <!-- mvn install:install-file -Dfile={Path/to/your/ojdbc.jar} -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar-->
+        <ojdbc14.v>11.2.0.4</ojdbc14.v>
     </properties>
 
     <dependencyManagement>
@@ -78,7 +79,7 @@
             </dependency>
             <dependency>
                 <groupId>com.oracle</groupId>
-                <artifactId>ojdbc14</artifactId>
+                <artifactId>ojdbc6</artifactId>
                 <version>${ojdbc14.v}</version>
             </dependency>
             <!-- JDBC Drivers -->
