@@ -62,7 +62,7 @@ public final class GenUtils {
 
     public static JDefinedClass getDaoClass(String packageName, String schema, JCodeModel codeModel, String dataSourceProvider) throws JClassAlreadyExistsException {
         JDefinedClass clazz = codeModel
-                ._class(JMod.PUBLIC | JMod.FINAL, getDaoName(packageName, schema), ClassType.CLASS);
+                ._class(JMod.PUBLIC | JMod.FINAL, Naming.getDaoName(packageName, schema), ClassType.CLASS);
         clazz.constructor(JMod.PRIVATE);
         // private final DataSource dataSource = SPINDataSourceLocator.getInstance().accountDataSource();
         JVar dao = clazz.field(JMod.PRIVATE | JMod.STATIC | JMod.FINAL, DataSource.class, "dataSource");
@@ -81,13 +81,13 @@ public final class GenUtils {
             final Collection<SQLParam> allParameters) throws JClassAlreadyExistsException {
         JMethod daoMethod;
         if (returnType == null)
-            daoMethod = daoClass.method(JMod.PUBLIC | JMod.STATIC, Void.TYPE, camelizedName(storedProcedureName, false));
+            daoMethod = daoClass.method(JMod.PUBLIC | JMod.STATIC, Void.TYPE, Naming.camelizedName(storedProcedureName, false));
         else
-            daoMethod = daoClass.method(JMod.PUBLIC | JMod.STATIC, returnType, camelizedName(storedProcedureName, false));
+            daoMethod = daoClass.method(JMod.PUBLIC | JMod.STATIC, returnType, Naming.camelizedName(storedProcedureName, false));
 
         for (SQLParam input : inputParams) {
             if (!Strings.isNullOrEmpty(input.getName())) {
-                JVar jvar = daoMethod.param(JMod.FINAL, input.getJavaType(), camelizedName(input.getName(), false));
+                JVar jvar = daoMethod.param(JMod.FINAL, input.getJavaType(), Naming.camelizedName(input.getName(), false));
 
 //                if (input.isNullable())
 //                    jvar.annotate(Nullable.class);
@@ -129,21 +129,21 @@ public final class GenUtils {
                         call = call.arg(mapperFactory.staticInvoke("create" + iterator.next().getJavaType().getSimpleName() + iterator.next().getJavaType().getSimpleName() + "Mapper"));
                     } else {
 
-                        String mapperName = getMapperName(packageName, storedProcedureName, schema);
+                        String mapperName = Naming.getMapperName(packageName, storedProcedureName, schema);
 
                         if (mappers.containsKey(resultSet)) {
                             mapper = mappers.get(resultSet);
                             System.out.println("Found the same resultset, reusing mapper. " + mapperName);
                         } else {
                             try {
-                                JDefinedClass mapper1 = codeModel._class(JMod.FINAL | JMod.PUBLIC, getMapperName(packageName, storedProcedureName, schema), ClassType.CLASS);
+                                JDefinedClass mapper1 = codeModel._class(JMod.FINAL | JMod.PUBLIC, Naming.getMapperName(packageName, storedProcedureName, schema), ClassType.CLASS);
                                 JClass rowMapper = codeModel.ref(RowMapper.class);
                                 rowMapper = rowMapper.narrow(clazzResult);
                                 mapper1._extends(rowMapper);
                                 mapperBody(models, mapper1, packageName, schema, storedProcedureName, resultSet);
                                 mappers.put(resultSet, mapper = mapper1);
                             } catch (Exception e) {
-                                System.out.println(getMapperName(packageName, storedProcedureName, schema));
+                                System.out.println(Naming.getMapperName(packageName, storedProcedureName, schema));
                                 System.out.println(storedProcedureName);
                                 // System.out.println(getMapperName(packageName, storedProcedureName, schema));
                                 // System.out.println(getMapperName(packageName, storedProcedureName, schema));
@@ -171,10 +171,10 @@ public final class GenUtils {
             for (SQLParam sqlParam : outParams) {
                 JInvocation invoke = paramFactory.staticInvoke(sqlParam.getParamMethodName());
                 if (sqlParam.isInOut()) {
-                    invoke = invoke.arg(JExpr.ref(camelizedName(sqlParam.getName(), false)));
+                    invoke = invoke.arg(JExpr.ref(Naming.camelizedName(sqlParam.getName(), false)));
                 }
                 outs.add(daoMethodBody.decl(JMod.FINAL, codeModel.ref(sqlParam.getDaoManType()),
-                                            "ref" + camelizedName(sqlParam.getName(), true),
+                                            "ref" + Naming.camelizedName(sqlParam.getName(), true),
                                             invoke));
             }
         }
@@ -317,9 +317,9 @@ public final class GenUtils {
             final JCodeModel codeModel) throws JClassAlreadyExistsException {
         JType returnType = null;
         JClass clazzResult = null;
-        String storedProcedureName = getSPName(schemaDotProcedure);
-        String schema = getSchemaName(schemaDotProcedure);
-        if (storedProcedureName.startsWith(GETTER_PREFIX) && resultSets.containsKey(schemaDotProcedure)) {
+        String storedProcedureName = Naming.getSPName(schemaDotProcedure);
+        String schema = Naming.getSchemaName(schemaDotProcedure);
+        if (storedProcedureName.startsWith(Naming.GETTER_PREFIX) && resultSets.containsKey(schemaDotProcedure)) {
 
             // TODO need better mechanism to verify if the same resultset already exists
             Collection<SQLParam> resultSetCollection = resultSets.get(schemaDotProcedure);
@@ -347,7 +347,7 @@ public final class GenUtils {
 
     // BeanT mapRow(final int rowIndex, final RSWrapperT rsw) throws SQLException;
     public static void mapperBody(final Map<String, JClass> models, JDefinedClass mapper, String packageName, String schema, String proc, Collection<SQLParam> resultSet) {
-        String modelName = getModelName(packageName, proc, schema);
+        String modelName = Naming.getModelName(packageName, proc, schema);
         JClass model = models.get(schema + "." + proc);
         if (model == null) {
             throw new NullPointerException("Model [" + modelName + "] is null");
@@ -380,7 +380,7 @@ public final class GenUtils {
             } else if ((param.isInOut() || param.isOut()) && inOutIterator != null && inOutIterator.hasNext()) {
                 call = call.arg(inOutIterator.next());
             } else {
-                call = call.arg(paramFactory.staticInvoke(param.getParamMethodName()).arg(JExpr.ref(camelizedName(param.getName(), false))));
+                call = call.arg(paramFactory.staticInvoke(param.getParamMethodName()).arg(JExpr.ref(Naming.camelizedName(param.getName(), false))));
             }
 
         }
@@ -428,7 +428,7 @@ public final class GenUtils {
                     }
                 }
 
-                String modelClassName = getModelName(packageName, getSPName(shortestName(similarResultSetStoredProcedures)), schema);
+                String modelClassName = Naming.getModelName(packageName, Naming.getSPName(shortestName(similarResultSetStoredProcedures)), schema);
 
                 JDefinedClass classResultDefinition = null;
                 try {
@@ -445,13 +445,13 @@ public final class GenUtils {
                 try {
                     for (SQLParam column : finalResultSet) {
                         String colName = column.getTableName() != null ? column.getTableName() + "_" + column.getName() : column.getName();
-                        String fieldName = camelizedName(colName, false);
-                        String method = camelizedName(column.getName(), true);
+                        String fieldName = Naming.camelizedName(colName, false);
+                        String method = Naming.camelizedName(column.getName(), true);
                         constructor.param(column.getJavaType(), fieldName);
                         JFieldVar fld = classResultDefinition.field(JMod.PRIVATE, column.getJavaType(), fieldName);
                         constructorBody.assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
                         // getter
-                        JMethod getter = classResultDefinition.method(JMod.PUBLIC, column.getJavaType(), GETTER_PREFIX + method);
+                        JMethod getter = classResultDefinition.method(JMod.PUBLIC, column.getJavaType(), Naming.GETTER_PREFIX + method);
 
                         getter.body()._return(JExpr._this().ref(fieldName));
                         // setter 

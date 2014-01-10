@@ -10,6 +10,7 @@
         <module>daoman-maven-plugin</module>
         <module>daoman-core</module>
         <module>daoman-gen</module>
+        <module>daoman-mysql</module>
     </modules>
 
     <name>daoman</name>
@@ -37,6 +38,7 @@
         <javatuples.v>1.2</javatuples.v>
         <spring-jdbc.v>3.2.3.RELEASE</spring-jdbc.v>
         <lombok.v>1.12.2</lombok.v>
+        <log4jdbc.v>1.2</log4jdbc.v>
         <!-- mvn install:install-file -Dfile={Path/to/your/ojdbc.jar} -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar-->
         <ojdbc14.v>11.2.0.4</ojdbc14.v>
     </properties>
@@ -82,7 +84,11 @@
                 <artifactId>ojdbc6</artifactId>
                 <version>${ojdbc14.v}</version>
             </dependency>
-            <!-- JDBC Drivers -->
+            <dependency>
+                <groupId>com.googlecode.log4jdbc</groupId>
+                <artifactId>log4jdbc</artifactId>
+                <version>${log4jdbc.v}</version>
+            </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -146,6 +152,11 @@
             <dependency>
                 <groupId>com.trebogeer.daoman</groupId>
                 <artifactId>daoman-sql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.trebogeer.daoman</groupId>
+                <artifactId>daoman-gen</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

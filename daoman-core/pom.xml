@@ -44,6 +44,10 @@
             <artifactId>daoman-sql</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.trebogeer.daoman</groupId>
+            <artifactId>daoman-gen</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.javatuples</groupId>
             <artifactId>javatuples</artifactId>
         </dependency>

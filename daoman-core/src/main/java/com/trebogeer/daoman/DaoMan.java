@@ -76,7 +76,7 @@ public class DaoMan {
     private String config = null;
 
     @Option(name = "--application", aliases = {"-a"})
-    private String app = "spin";
+    private String app = "app";
 
     @Option(name = "--data-source-provider", aliases = {"-dsp"})
     private String dataSourceProvider = "com.trebogeer.datasource.%sDataSource();";
