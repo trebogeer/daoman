@@ -183,30 +183,30 @@ public final class GenUtils {
 
     public static JType notCollectionReturnType(final Collection<SQLParam> outParams, final JCodeModel codeModel) {
         JType returnType = null;
-        List<Class<?> > params = getSQLParams(outParams.iterator());
-        JClass ret = codeModel.ref(Decade.class);
-        returnType = ret.narrow((JClass) params);
+//        List<Class<?> > params = getSQLParams(outParams.iterator());
+//        JClass ret = codeModel.ref(Decade.class);
+//        returnType = ret.narrow((JClass) params);
 
 
-//        if (outParams.size() == 1) {
-//            SQLParam retParam = outParams.iterator().next();
-//            returnType = codeModel.ref(retParam.getJavaType());
-//        } else if (outParams.size() == 2) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//
-//            JClass ret = codeModel.ref(Pair.class);
-//            returnType = ret.narrow(codeModel.ref(first.getJavaType()), codeModel.ref(second.getJavaType()));
-//        } else if (outParams.size() == 3) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//            SQLParam third = it.next();
-//
-//            JClass ret = codeModel.ref(Triplet.class);
-//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType());
-//        } else if (outParams.size() == 4) {
+        if (outParams.size() == 1) {
+            SQLParam retParam = outParams.iterator().next();
+            returnType = codeModel.ref(retParam.getJavaType());
+        } else if (outParams.size() == 2) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+
+            JClass ret = codeModel.ref(Pair.class);
+            returnType = ret.narrow(codeModel.ref(first.getJavaType()), codeModel.ref(second.getJavaType()));
+        } else if (outParams.size() == 3) {
+            Iterator<SQLParam> it = outParams.iterator();
+            SQLParam first = it.next();
+            SQLParam second = it.next();
+            SQLParam third = it.next();
+
+            JClass ret = codeModel.ref(Triplet.class);
+            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType());
+        } //else if (outParams.size() == 4) {
 //            Iterator<SQLParam> it = outParams.iterator();
 //            SQLParam first = it.next();
 //            SQLParam second = it.next();

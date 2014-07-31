@@ -64,10 +64,10 @@ public class DaoMan {
     private String dbPort = "3306";
 
     @Option(name = "--user", aliases = {"-u"})
-    private String userName = "admin";
+    private String userName = "daoman";
 
     @Option(name = "--password", aliases = {"-p"})
-    private String password = "admin";
+    private String password = "daoman";
 
     @Option(name = "--schema", aliases = {"-s"}/*, multiValued = true*/)
     private List<String> schemaName = newArrayList();
@@ -91,7 +91,7 @@ public class DaoMan {
     private String outParamSize = "n";
 
     @Option(name = "--error-code-name", aliases = "-ecn")
-    private String errorCodeName = "";
+    private String errorCodeName = "err";
 
 
     private DaoMan() {
