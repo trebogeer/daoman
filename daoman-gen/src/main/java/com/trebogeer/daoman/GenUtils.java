@@ -17,14 +17,8 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
-import org.javatuples.Decade;
-import org.javatuples.Ennead;
-import org.javatuples.Octet;
+import com.trebogeer.daoman.jdbc.RowMapper;
 import org.javatuples.Pair;
-import org.javatuples.Quartet;
-import org.javatuples.Quintet;
-import org.javatuples.Septet;
-import org.javatuples.Sextet;
 import org.javatuples.Triplet;
 
 import javax.sql.DataSource;
@@ -39,14 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.trebogeer.daoman.Naming.GETTER_PREFIX;
-import static com.trebogeer.daoman.Naming.camelizedName;
-import static com.trebogeer.daoman.Naming.getDaoName;
-import static com.trebogeer.daoman.Naming.getMapperName;
-import static com.trebogeer.daoman.Naming.getModelName;
-import static com.trebogeer.daoman.Naming.getSPName;
-import static com.trebogeer.daoman.Naming.getSchemaName;
 
 /**
  * @author dimav
