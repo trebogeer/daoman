@@ -91,7 +91,7 @@ public class DaoMan {
     private String outParamSize = "n";
 
     @Option(name = "--error-code-name", aliases = "-ecn")
-    private String errorCodeName = "err";
+    private String errorCodeName = "error_code";
 
 
     private DaoMan() {
