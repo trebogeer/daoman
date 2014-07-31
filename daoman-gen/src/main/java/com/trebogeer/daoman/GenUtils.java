@@ -22,6 +22,7 @@ import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +65,7 @@ public final class GenUtils {
             final String packageName, final String schema,
             final JClass clazzResult, final Map<Collection<SQLParam>, JClass> mappers,
             final Map<String, JClass> models, final Multimap<String, SQLParam> resultSets,
-            final Collection<SQLParam> allParameters) throws JClassAlreadyExistsException {
+            final Collection<SQLParam> allParameters, JClass rsutil) throws JClassAlreadyExistsException {
         JMethod daoMethod;
         if (returnType == null)
             daoMethod = daoClass.method(JMod.PUBLIC | JMod.STATIC, Void.TYPE, Naming.camelizedName(storedProcedureName, false));
@@ -126,7 +127,7 @@ public final class GenUtils {
                                 JClass rowMapper = codeModel.ref(RowMapper.class);
                                 rowMapper = rowMapper.narrow(clazzResult);
                                 mapper1._extends(rowMapper);
-                                mapperBody(models, mapper1, packageName, schema, storedProcedureName, resultSet);
+                                mapperBody(models, mapper1, packageName, schema, storedProcedureName, resultSet, rsutil);
                                 mappers.put(resultSet, mapper = mapper1);
                             } catch (Exception e) {
                                 System.out.println(Naming.getMapperName(packageName, storedProcedureName, schema));
@@ -332,15 +333,18 @@ public final class GenUtils {
     }
 
     // BeanT mapRow(final int rowIndex, final RSWrapperT rsw) throws SQLException;
-    public static void mapperBody(final Map<String, JClass> models, JDefinedClass mapper, String packageName, String schema, String proc, Collection<SQLParam> resultSet) {
+    public static void mapperBody(
+            final Map<String, JClass> models, JDefinedClass mapper,
+            String packageName, String schema, String proc,
+            Collection<SQLParam> resultSet, JClass rsulils) {
         String modelName = Naming.getModelName(packageName, proc, schema);
         JClass model = models.get(schema + "." + proc);
         if (model == null) {
             throw new NullPointerException("Model [" + modelName + "] is null");
         }
-        JMethod mapRow = mapper.method(JMod.PUBLIC, model, "mapRow");
+        JMethod mapRow = mapper.method(JMod.PUBLIC, model, "map");
         JVar index = mapRow.param(JMod.FINAL, Integer.TYPE, "rowIndex");
-        JVar rsw = mapRow.param(JMod.FINAL, /*ResultSetWrapper.class*/Object.class, "rsw");
+        JVar rs = mapRow.param(JMod.FINAL, ResultSet.class, "rs");
         mapRow._throws(SQLException.class);
 
         JBlock body = mapRow.body();
@@ -348,7 +352,7 @@ public final class GenUtils {
         JInvocation returnExpr = JExpr._new(model);
         int i = 1;
         for (SQLParam res : resultSet) {
-            returnExpr.arg(rsw.invoke(res.getResultSetWrapperMethodName()).arg(JExpr.lit(i)));
+            returnExpr.arg(rsulils.staticInvoke(res.getResultSetWrapperMethodName()).arg(JExpr.lit(i)).arg(rs));
             i++;
         }
 

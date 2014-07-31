@@ -15,7 +15,13 @@ BEGIN
 
   SELECT 	
     dinosaurId,
-    dinosaurName
+    dinosaurName,
+    height,
+    length,
+    weight,
+    dinosaurFood,
+    discoveredYear,
+    discoveredLocation
   FROM 
     dinosaurs.dinosaur;
 

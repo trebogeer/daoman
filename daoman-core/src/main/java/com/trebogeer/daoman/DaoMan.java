@@ -317,6 +317,7 @@ public class DaoMan {
                 JClass paramFactory = codeModel.directClass("com.trebogeer.daoman.jdbc.SPParams");
                 JClass storedProcExecutor = codeModel.directClass("com.trebogeer.daoman.jdbc.StoredProcs");
                 JClass mapperFactory = codeModel.directClass("com.trebogeer.daoman.jdbc.SimpleMapperFactory");
+                JClass rsUtils = codeModel.directClass("com.trebogeer.daoman.jdbc.RSUtils");
                 for (String schemaDotProcedure : filteredBySchema.keySet()) {
                     String sp = getSPName(schemaDotProcedure);
                     JType returnType = null;
@@ -355,7 +356,7 @@ public class DaoMan {
                     JBlock daoMethodBody = getDaoMethod(
                             codeModel, returnType, sp, daoClass, inputParams, outParams,
                             paramFactory, storedProcExecutor, mapperFactory,
-                            PACKAGE + app + ".", schema, clazzResult, mappers, model, resultSets, inputParameters);
+                            PACKAGE + app + ".", schema, clazzResult, mappers, model, resultSets, inputParameters, rsUtils);
 
                 }
 
