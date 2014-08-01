@@ -35,13 +35,14 @@
         <!--<jaxb-xjc.v>2.2.7</jaxb-xjc.v>-->
         <args4j.v>2.0.23</args4j.v>
         <testng.v>6.8.5</testng.v>
-        <guava.v>14.0.1</guava.v>
+        <guava.v>17.0</guava.v>
         <javatuples.v>1.2</javatuples.v>
         <spring-jdbc.v>3.2.3.RELEASE</spring-jdbc.v>
         <lombok.v>1.12.2</lombok.v>
         <log4jdbc.v>1.2</log4jdbc.v>
         <!-- mvn install:install-file -Dfile={Path/to/your/ojdbc.jar} -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar-->
         <ojdbc14.v>11.2.0.4</ojdbc14.v>
+        <slf4j.v>1.7.5</slf4j.v>
     </properties>
 
     <dependencyManagement>
@@ -99,6 +100,11 @@
                 <groupId>org.javatuples</groupId>
                 <artifactId>javatuples</artifactId>
                 <version>${javatuples.v}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.v}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>

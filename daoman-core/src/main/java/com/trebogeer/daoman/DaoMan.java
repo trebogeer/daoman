@@ -315,7 +315,7 @@ public class DaoMan {
                 final Map<String, JClass> model = collapseModel(resultSets, PACKAGE + app + ".", schema, codeModel);
                 JDefinedClass daoClass = getDaoClass(PACKAGE + app + ".", schema, codeModel, dataSourceProvider);
                 JClass paramFactory = codeModel.directClass("com.trebogeer.daoman.jdbc.SPParams");
-                JClass storedProcExecutor = codeModel.directClass("com.trebogeer.daoman.jdbc.StoredProcs");
+                JClass storedProcExecutor = codeModel.directClass("com.trebogeer.daoman.jdbc.SPExec");
                 JClass mapperFactory = codeModel.directClass("com.trebogeer.daoman.jdbc.SimpleMapperFactory");
                 JClass rsUtils = codeModel.directClass("com.trebogeer.daoman.jdbc.RSUtils");
                 for (String schemaDotProcedure : filteredBySchema.keySet()) {
