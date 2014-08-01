@@ -147,11 +147,13 @@ public class SPExec {
             final String sql = JDBCUtil.generateSqlCallString(procName, params.length);
             stmt = conn.prepareCall(sql);
             for (int i = 0; i < params.length; i++) {
-                // params[i].apply(stmt, i + 1);
+                params[i].set(stmt, i + 1);
             }
             stmt.execute();
-           // final long start = System.currentTimeMillis();
-            // params.extract(csw);
+            // final long start = System.currentTimeMillis();
+            for (int i = 0; i < params.length; i++) {
+                params[i].get(stmt, i + 1);
+            }
             rs = stmt.getResultSet();
             if (reader != null && rs != null) {
                 int rows = reader.read(rs);
