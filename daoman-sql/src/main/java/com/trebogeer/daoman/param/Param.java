@@ -1,5 +1,8 @@
 package com.trebogeer.daoman.param;
 
+import java.sql.CallableStatement;
+import java.sql.SQLException;
+
 /**
  * @author dimav
  *         Date: 8/7/13
@@ -11,9 +14,24 @@ public abstract class Param<T> {
     Type type;
 
     public enum Type {
-        IN,
-        OUT,
-        INOUT
+        IN(1),
+        OUT(2),
+        INOUT(4);
+
+
+        Type(int mask) {
+            this.mask = mask;
+        }
+
+        int mask;
+
+        public boolean isOut() {
+            return (7 & mask) > 0;
+        }
+
+        public boolean isIn() {
+            return (3 & mask) > 0;
+        }
     }
 
     public Param(final T value, Type type) {
@@ -29,5 +47,8 @@ public abstract class Param<T> {
         return type;
     }
 
+    public abstract void set(CallableStatement stmt, int pos) throws SQLException;
+
+    public abstract void get(CallableStatement stmt, int pos) throws SQLException;
 
 }

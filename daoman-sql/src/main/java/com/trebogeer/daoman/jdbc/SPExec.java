@@ -150,7 +150,7 @@ public class SPExec {
                 // params[i].apply(stmt, i + 1);
             }
             stmt.execute();
-            final long start = System.currentTimeMillis();
+           // final long start = System.currentTimeMillis();
             // params.extract(csw);
             rs = stmt.getResultSet();
             if (reader != null && rs != null) {
