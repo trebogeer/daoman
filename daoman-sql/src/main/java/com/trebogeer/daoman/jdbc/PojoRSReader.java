@@ -16,11 +16,10 @@ public class PojoRSReader<T> extends RSReader<T, T> {
 
     @Override
     public int read(ResultSet rs) throws SQLException {
-        return 0;
+
+        if (rs.next())
+            value = mapper.map(0, rs);
+        return value != null ? 1 : 0;
     }
 
-    @Override
-    public T getValue() {
-        return null;
-    }
 }

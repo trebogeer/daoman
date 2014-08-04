@@ -4,6 +4,7 @@ import org.javatuples.Pair;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,15 +16,18 @@ public class MapRSReader<K, V> extends RSReader<Pair<K, V>, Map<K, V>> {
 
     protected MapRSReader(RowMapper<Pair<K, V>> mapper) {
         super(mapper);
+        value = new HashMap<K, V>();
     }
 
     @Override
     public int read(ResultSet rs) throws SQLException {
-        return 0;
+        int cnt = 0;
+        for (int i = 0; rs.next(); i++) {
+            final Pair<K, V> pair = mapper.map(i, rs);
+            value.put(pair.getValue0(), pair.getValue1());
+            cnt++;
+        }
+        return cnt;
     }
 
-    @Override
-    public Map<K, V> getValue() {
-        return null;
-    }
 }

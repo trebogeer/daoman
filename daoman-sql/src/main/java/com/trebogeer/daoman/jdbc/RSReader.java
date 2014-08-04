@@ -13,6 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class RSReader<T, V> {
 
     protected final RowMapper<T> mapper;
+    protected V value;
 
     protected RSReader(RowMapper<T> mapper) {
         checkNotNull(mapper, "Row Mapper can't be null");
@@ -25,7 +26,7 @@ public abstract class RSReader<T, V> {
      * @throws java.sql.SQLException
      */
     public abstract int read(ResultSet rs) throws SQLException;
-    public abstract V getValue();
+    public V getValue(){return value;}
 
 
 }
