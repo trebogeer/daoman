@@ -21,6 +21,7 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.trebogeer.daoman.util.JDBCUtil.close;
 import static java.util.Collections.singleton;
 
 /**
@@ -138,7 +139,7 @@ public class SPExec {
         }
     }
 
-    // TODO implement
+
     private static void jdbcCall(Connection conn, String procName, RSReader reader, final Param... params) throws SQLException {
 
         CallableStatement stmt = null;
@@ -161,7 +162,7 @@ public class SPExec {
             }
 
         } finally {
-            JDBCUtil.close(rs, stmt);
+            close(rs, stmt);
         }
 
     }
