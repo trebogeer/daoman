@@ -15,7 +15,12 @@ import java.util.Map;
  *         Date: 12/6/13
  *         Time: 3:10 PM
  */
+/*
+  Kind of ugly interaction with DB. Not even sure if I should consider it for implementation.
+  Better take a look ot ibatis or smth else.
+ */
 public class SpringJDBC {
+
 
     @Test
     public void test() {
@@ -31,8 +36,6 @@ public class SpringJDBC {
         for (Map.Entry<String, Object> stringObjectEntry : map.entrySet()) {
             System.out.println(stringObjectEntry);
         }
-
-
     }
 
 
