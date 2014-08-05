@@ -192,7 +192,7 @@ public final class GenUtils {
             SQLParam third = it.next();
 
             JClass ret = codeModel.ref(Triplet.class);
-            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType());
+            returnType = ret.narrow(codeModel.ref(first.getJavaType()), codeModel.ref(second.getJavaType()), codeModel.ref(third.getJavaType()));
         } //else if (outParams.size() == 4) {
 //            Iterator<SQLParam> it = outParams.iterator();
 //            SQLParam first = it.next();
