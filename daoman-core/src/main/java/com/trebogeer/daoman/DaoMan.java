@@ -7,17 +7,16 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.trebogeer.daoman.util.JDBCUtil;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.writer.SingleStreamCodeWriter;
+import com.trebogeer.daoman.util.JDBCUtil;
 import org.javatuples.Pair;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -32,11 +31,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.trebogeer.daoman.GenUtils.collapseModel;
 import static com.trebogeer.daoman.GenUtils.collectionResultModelMapper;
 import static com.trebogeer.daoman.GenUtils.getDaoClass;
@@ -54,57 +51,22 @@ import static com.trebogeer.daoman.Naming.getSchemaName;
  */
 public class DaoMan {
 
-    @Option(name = "--generated-source-dir", aliases = {"-gsd"})
-    private String generatedSourceDir = "/tmp/generated-source-dir";
+    private Config cfg;
 
-    @Option(name = "--database-host", aliases = {"-h"})
-    private String dbHost = "localhost";
-
-    @Option(name = "--database-port", aliases = {"-P"})
-    private String dbPort = "3306";
-
-    @Option(name = "--user", aliases = {"-u"})
-    private String userName = "daoman";
-
-    @Option(name = "--password", aliases = {"-p"})
-    private String password = "daoman";
-
-    @Option(name = "--schema", aliases = {"-s"}/*, multiValued = true*/)
-    private List<String> schemaName = newArrayList();
-
-    @Option(name = "--meta-config-file", aliases = {"-mcf"})
-    private String config = null;
-
-    @Option(name = "--application", aliases = {"-a"})
-    private String app = "app";
-
-    @Option(name = "--data-source-provider", aliases = {"-dsp"})
-    private String dataSourceProvider = "com.trebogeer.datasource.%sDataSource();";
-
-    @Option(name = "--debug", aliases = "-d")
-    private String debug = "y";
-
-    @Option(name = "--stored-procedures", aliases = {"-sp"}/*, multiValued = true*/)
-    private List<String> storedProcs = newArrayList();
-
-    @Option(name = "--out-parameter-size", aliases = "-ops")
-    private String outParamSize = "n";
-
-    @Option(name = "--error-code-name", aliases = "-ecn")
-    private String errorCodeName = "error_code";
-
-
-    private DaoMan() {
+    private DaoMan(Config cfg) {
+        this.cfg = cfg;
     }
 
     public static void main(String... args) {
-        DaoMan daoMan = new DaoMan();
-        CmdLineParser parser = new CmdLineParser(daoMan);
+
+        Config cfg = new Config();
+        CmdLineParser parser = new CmdLineParser(cfg);
         try {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
             throw new RuntimeException(e);
         }
+        DaoMan daoMan = new DaoMan(cfg);
         daoMan.exec();
     }
 
@@ -113,26 +75,26 @@ public class DaoMan {
         Connection con = null;
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://" + dbHost + ":" + dbPort + "/",
-                                              userName, password);
+            con = DriverManager.getConnection("jdbc:mysql://" + cfg.dbHost + ":" + cfg.dbPort + "/",
+                                              cfg.userName, cfg.password);
             LinkedList<String> schemas = new LinkedList<String>();
             DatabaseMetaData aBaseM = con.getMetaData();
             ResultSet rs = null;
 
-            if (schemaName.isEmpty() || schemaName.contains("all")) {
+            if (cfg.schemaName.isEmpty() || cfg.schemaName.contains("all")) {
                 rs = aBaseM.getCatalogs();
                 while (rs.next()) {
                     schemas.add(rs.getString(1));
                 }
                 JDBCUtil.close(rs);
             } else {
-                schemas.addAll(new HashSet<String>(schemaName));
+                schemas.addAll(new HashSet<String>(cfg.schemaName));
             }
 
             //SqlUtil.close(con);
             Multimap<String, String> procs = HashMultimap.create();
             for (String schema : schemas) {
-                if (storedProcs == null || storedProcs.isEmpty()) {
+                if (cfg.storedProcs == null || cfg.storedProcs.isEmpty()) {
                     rs = con.getMetaData().getProcedures(schema, null, null);
                     while (rs.next()) {
                         // skipping functions for now ,
@@ -153,7 +115,7 @@ public class DaoMan {
 
                     JDBCUtil.close(rs);
                 } else {
-                    for (String sp : storedProcs) {
+                    for (String sp : cfg.storedProcs) {
                         procs.put(schema, sp);
                     }
                 }
@@ -287,14 +249,14 @@ public class DaoMan {
     private Connection getConnection(String schema) throws Exception {
         final StringBuilder bldr = new StringBuilder();
         bldr.append("jdbc:mysql://")
-                .append(dbHost).append(":")
-                .append(dbPort).append("/").append(schema)
+                .append(cfg.dbHost).append(":")
+                .append(cfg.dbPort).append("/").append(schema)
                 .append("?zeroDateTimeBehavior=convertToNull&cachePrepStmts=true&cacheCallableStmts=true&prepStmtCacheSize=100&maintainTimeStats=false");
 
         return DriverManager.
                 getConnection(
                         bldr.toString(),
-                        userName, password);
+                        cfg.userName, cfg.password);
     }
 
 
@@ -312,8 +274,8 @@ public class DaoMan {
             });
 
             if (filteredBySchema != null && !filteredBySchema.isEmpty()) {
-                final Map<String, JClass> model = collapseModel(resultSets, PACKAGE + app + ".", schema, codeModel);
-                JDefinedClass daoClass = getDaoClass(PACKAGE + app + ".", schema, codeModel, dataSourceProvider);
+                final Map<String, JClass> model = collapseModel(resultSets, PACKAGE + cfg.app + ".", schema, codeModel);
+                JDefinedClass daoClass = getDaoClass(PACKAGE + cfg.app + ".", schema, codeModel, cfg.dataSourceProvider);
                 JClass paramFactory = codeModel.directClass("com.trebogeer.daoman.jdbc.SPParams");
                 JClass storedProcExecutor = codeModel.directClass("com.trebogeer.daoman.jdbc.SPExec");
                 JClass mapperFactory = codeModel.directClass("com.trebogeer.daoman.jdbc.SimpleMapperFactory");
@@ -328,7 +290,7 @@ public class DaoMan {
                     Collection<SQLParam> outParams = Collections2.filter(inputParameters, new Predicate<SQLParam>() {
                         @Override
                         public boolean apply(final SQLParam input) {
-                            return input.isInOut() || (input.isOut() && !input.getName().equals(errorCodeName));
+                            return input.isInOut() || (input.isOut() && !input.getName().equals(cfg.errorCodeName));
                         }
                     });
                     // assuming that if a stored procedure has a list of output parameters it won't have a resultset
@@ -339,7 +301,7 @@ public class DaoMan {
                         // TODO better condition ?
                         if (sp.startsWith(GETTER_PREFIX) && resultSets.containsKey(schemaDotProcedure)) {
                             Pair<JType, JClass> typeAndClass = collectionResultModelMapper(
-                                    schemaDotProcedure, resultSets, PACKAGE + app + ".", model, codeModel
+                                    schemaDotProcedure, resultSets, PACKAGE + cfg.app + ".", model, codeModel
                             );
                             returnType = typeAndClass.getValue0();
                             clazzResult = typeAndClass.getValue1();
@@ -356,21 +318,21 @@ public class DaoMan {
                     JBlock daoMethodBody = getDaoMethod(
                             codeModel, returnType, sp, daoClass, inputParams, outParams,
                             paramFactory, storedProcExecutor, mapperFactory,
-                            PACKAGE + app + ".", schema, clazzResult, mappers, model, resultSets, inputParameters, rsUtils);
+                            PACKAGE + cfg.app + ".", schema, clazzResult, mappers, model, resultSets, inputParameters, rsUtils);
 
                 }
 
 
             }
         }
-        if ("y".equalsIgnoreCase(debug)) {
+        if ("y".equalsIgnoreCase(cfg.debug)) {
             codeModel.build(new SingleStreamCodeWriter(System.out));
         } else {
-            File source = new File(generatedSourceDir);
+            File source = new File(cfg.generatedSourceDir);
             if (!source.exists()) {
                 source.mkdirs();
             }
-            codeModel.build(new File(generatedSourceDir));
+            codeModel.build(new File(cfg.generatedSourceDir));
         }
 
     }
