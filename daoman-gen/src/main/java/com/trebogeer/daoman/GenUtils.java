@@ -103,7 +103,11 @@ public final class GenUtils {
                         outs.get(2).invoke(GET_VALUE_DAO_MAN)));
             } else if (outParams.size() > 3) {
                 // Generate model bean
-                daoMethodBody._return(JExpr._null());
+                JInvocation inv = JExpr._new(returnType);
+                for(JVar var : outs){
+                    inv.arg(var.invoke(GET_VALUE_DAO_MAN));
+                }
+                daoMethodBody._return(inv);
             } else if (outParams.size() == 0) {
                 Collection<SQLParam> resultSet = resultSets.get(schema + "." + storedProcedureName);
                 if (resultSet != null) {
@@ -193,100 +197,40 @@ public final class GenUtils {
 
             JClass ret = codeModel.ref(Triplet.class);
             returnType = ret.narrow(codeModel.ref(first.getJavaType()), codeModel.ref(second.getJavaType()), codeModel.ref(third.getJavaType()));
-        } //else if (outParams.size() == 4) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//            SQLParam third = it.next();
-//            SQLParam forth = it.next();
-//
-//            JClass ret = codeModel.ref(Quartet.class);
-//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType());
-//        } else if (outParams.size() == 5) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//            SQLParam third = it.next();
-//            SQLParam forth = it.next();
-//            SQLParam fifth = it.next();
-//
-//            JClass ret = codeModel.ref(Quintet.class);
-//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType());
-//        } else if (outParams.size() == 6) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//            SQLParam third = it.next();
-//            SQLParam forth = it.next();
-//            SQLParam fifth = it.next();
-//            SQLParam sixth = it.next();
-//
-//            JClass ret = codeModel.ref(Sextet.class);
-//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-//                    sixth.getJavaType());
-//        } else if (outParams.size() == 7) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//            SQLParam third = it.next();
-//            SQLParam forth = it.next();
-//            SQLParam fifth = it.next();
-//            SQLParam sixth = it.next();
-//            SQLParam seventh = it.next();
-//
-//            JClass ret = codeModel.ref(Septet.class);
-//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-//                    sixth.getJavaType(), seventh.getJavaType());
-//        } else if (outParams.size() == 8) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//            SQLParam third = it.next();
-//            SQLParam forth = it.next();
-//            SQLParam fifth = it.next();
-//            SQLParam sixth = it.next();
-//            SQLParam seventh = it.next();
-//            SQLParam eighth = it.next();
-//
-//            JClass ret = codeModel.ref(Octet.class);
-//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-//                    sixth.getJavaType(), seventh.getJavaType(),eighth.getJavaType());
-//        } else if (outParams.size() == 9) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//            SQLParam third = it.next();
-//            SQLParam forth = it.next();
-//            SQLParam fifth = it.next();
-//            SQLParam sixth = it.next();
-//            SQLParam seventh = it.next();
-//            SQLParam eighth = it.next();
-//            SQLParam ninth = it.next();
-//
-//            JClass ret = codeModel.ref(Ennead.class);
-//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-//                    sixth.getJavaType(), seventh.getJavaType(), eighth.getJavaType(),ninth.getJavaType());
-//        } else if (outParams.size() == 10) {
-//            Iterator<SQLParam> it = outParams.iterator();
-//            SQLParam first = it.next();
-//            SQLParam second = it.next();
-//            SQLParam third = it.next();
-//            SQLParam forth = it.next();
-//            SQLParam fifth = it.next();
-//            SQLParam sixth = it.next();
-//            SQLParam seventh = it.next();
-//            SQLParam eighth = it.next();
-//            SQLParam ninth = it.next();
-//            SQLParam tenth = it.next();
-//
-//            JClass ret = codeModel.ref(Decade.class);
-//            returnType = ret.narrow(first.getJavaType(), second.getJavaType(), third.getJavaType(), forth.getJavaType(), fifth.getJavaType(),
-//                    sixth.getJavaType(), seventh.getJavaType(), eighth.getJavaType(), ninth.getJavaType(),tenth.getJavaType());
-            // TODO produce return bean
-            // continue;
-            // Current gen.a implementation does not support more than 3 out/inout parameters
-            // throw new XRuntime("Current gen.a implementation does not support more than 3 out/inout parameters");
-  //      }
+        } else {
+            JDefinedClass classResultDefinition = null;
+            try {
+                classResultDefinition = codeModel._class(JMod.PUBLIC, "OutClass", ClassType.CLASS);
+                JMethod constructor = classResultDefinition.constructor(JMod.PRIVATE);
+                JBlock constructorBody = constructor.body();
+                for (SQLParam column : outParams) {
+                    String colName = column.getTableName() != null ? column.getTableName() + "_" + column.getName() : column.getName();
+                    String fieldName = Naming.camelizedName(colName, false);
+                    String method = Naming.camelizedName(column.getName(), true);
+                    constructor.param(column.getJavaType(), fieldName);
+                    JFieldVar fld = classResultDefinition.field(JMod.PRIVATE, column.getJavaType(), fieldName);
+                    constructorBody.assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
+                    // getter
+                    JMethod getter = classResultDefinition.method(JMod.PUBLIC, column.getJavaType(), Naming.GETTER_PREFIX + method);
+
+                    getter.body()._return(JExpr._this().ref(fieldName));
+                    // setter
+                    JMethod setter = classResultDefinition.method(JMod.PUBLIC, Void.TYPE, "set" + method);
+                    setter.param(column.getJavaType(), fieldName);
+                    setter.body().assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
+                }
+            } catch (Exception ex) {
+                System.out.println(ex);
+                ex.printStackTrace();
+                throw new RuntimeException(ex);
+            }
+            returnType = classResultDefinition;
+        }
+        // TODO produce return bean
+        // continue;
+        // Current gen.a implementation does not support more than 3 out/inout parameters
+        // throw new XRuntime("Current gen.a implementation does not support more than 3 out/inout parameters");
+        //      }
         return returnType;
     }
 
