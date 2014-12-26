@@ -43,6 +43,7 @@
         <log4jdbc.v>1.2</log4jdbc.v>
         <!-- mvn install:install-file -Dfile={Path/to/your/ojdbc.jar} -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar-->
         <ojdbc14.v>11.2.0.4</ojdbc14.v>
+        <jdbi.v>2.55</jdbi.v>
         <slf4j.v>1.7.5</slf4j.v>
     </properties>
 
@@ -86,6 +87,11 @@
                 <groupId>com.oracle</groupId>
                 <artifactId>ojdbc6</artifactId>
                 <version>${ojdbc14.v}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jdbi</groupId>
+                <artifactId>jdbi</artifactId>
+                <version>${jdbi.v}</version>
             </dependency>
             <dependency>
                 <groupId>com.googlecode.log4jdbc</groupId>
