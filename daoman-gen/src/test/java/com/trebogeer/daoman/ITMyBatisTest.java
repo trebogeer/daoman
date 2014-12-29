@@ -39,7 +39,7 @@ public class ITMyBatisTest extends MySQLTest {
             "    <!--</mappers>-->\n" +
             "</configuration>";
 
-    @Test
+    @Test(groups = {"itest"})
     public void runTest() throws IOException {
 
         String c = config.replaceAll("3306", PORT);

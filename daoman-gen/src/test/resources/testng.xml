@@ -1,0 +1,7 @@
+<test name="it">
+    <groups>
+        <run>
+            <include name="itest"/>
+        </run>
+    </groups>
+</test>

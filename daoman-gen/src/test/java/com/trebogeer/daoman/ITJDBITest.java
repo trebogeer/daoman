@@ -17,7 +17,7 @@ import java.sql.DriverManager;
  */
 public class ITJDBITest extends MySQLTest {
 
-    @Test
+    @Test(groups = {"itest"})
     public void test() throws Exception {
        /* Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection con = DriverManager.getConnection("jdbc:mysql://" + cfg.dbHost + ":" + cfg.dbPort + "/",

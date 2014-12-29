@@ -57,6 +57,16 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludedGroups>itest</excludedGroups>
+                        <!-- skips surefire tests without skipping failsafe tests.
+                                 Property value seems to magically default to false -->
+                    <skipTests>${skip.surefire.tests}</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
@@ -73,6 +83,7 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
@@ -84,7 +95,7 @@
                                 <artifactItem>
                                     <groupId>com.jcabi</groupId>
                                     <artifactId>mysql-dist</artifactId>
-                                    <version>5.6.14</version>
+                                    <version>${mysql.v}</version>
                                     <classifier>${mysql.classifier}</classifier>
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
@@ -114,11 +125,15 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
                         <mysql.port>${mysql.port}</mysql.port>
                     </systemPropertyVariables>
+                    <groups>itest</groups>
+                    <parallel>methods</parallel>
+                    <threadCount>10</threadCount>
                 </configuration>
                 <executions>
                     <execution>
