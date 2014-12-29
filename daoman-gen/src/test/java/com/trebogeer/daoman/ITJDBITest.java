@@ -15,7 +15,7 @@ import java.sql.DriverManager;
  *         Date: 12/26/14
  *         Time: 2:55 PM
  */
-public class JDBITest {
+public class ITJDBITest extends MySQLTest {
 
     @Test
     public void test() throws Exception {
@@ -26,7 +26,7 @@ public class JDBITest {
         dataSource.setUser("username");
         dataSource.setPassword("password");
         dataSource.setServerName("localhost");
-        dataSource.setPort(3306);
+        dataSource.setPort(Integer.valueOf(PORT));
         dataSource.setDatabaseName("databasename");
 
         DBI dbi = new DBI(dataSource);

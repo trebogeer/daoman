@@ -27,6 +27,8 @@
 
 
     <properties>
+        <!--need to take a look at ollin-->
+        <ollin.v>http://code.google.com/p/ollin/</ollin.v>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <organization.logo>http://trebogger.com/logo.jpf</organization.logo>
         <mysql.v>5.1.31</mysql.v>
@@ -44,7 +46,9 @@
         <!-- mvn install:install-file -Dfile={Path/to/your/ojdbc.jar} -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar-->
         <ojdbc14.v>11.2.0.4</ojdbc14.v>
         <jdbi.v>2.55</jdbi.v>
+        <jcabi.v>0.14</jcabi.v>
         <slf4j.v>1.7.5</slf4j.v>
+        <jdk.v>1.7</jdk.v>
     </properties>
 
     <dependencyManagement>
@@ -112,6 +116,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.v}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jcabi</groupId>
+                <artifactId>jcabi-jdbc</artifactId>
+                <version>${jcabi.v}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -200,8 +209,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>${jdk.v}</source>
+                        <target>${jdk.v}</target>
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
