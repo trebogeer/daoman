@@ -6,4 +6,7 @@ package com.trebogeer.daoman;
 public abstract class MySQLTest {
 
     static final String PORT = System.getProperty("mysql.port");
+    static final String USER = System.getProperty("mysql.user");
+    static final String PWD = System.getProperty("mysql.pwd");
+    static final String DB = System.getProperty("mysql.db");
 }
