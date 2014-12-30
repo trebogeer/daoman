@@ -23,11 +23,11 @@ public class ITJDBITest extends MySQLTest {
         Connection con = DriverManager.getConnection("jdbc:mysql://" + cfg.dbHost + ":" + cfg.dbPort + "/",
                 cfg.userName, cfg.password);*/
         MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();
-        dataSource.setUser("username");
-        dataSource.setPassword("password");
+        dataSource.setUser(USER);
+        dataSource.setPassword(PWD);
         dataSource.setServerName("localhost");
         dataSource.setPort(Integer.valueOf(PORT));
-        dataSource.setDatabaseName("databasename");
+        dataSource.setDatabaseName(DB);
 
         DBI dbi = new DBI(dataSource);
 

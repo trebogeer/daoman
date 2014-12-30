@@ -14,11 +14,11 @@ public class ITJCABITest extends MySQLTest {
     @Test(groups = {"itest"})
     public void test() throws Exception {
         MysqlDataSource source = new MysqlConnectionPoolDataSource();
-        source.setUser("username");
-        source.setPassword("password");
+        source.setUser(USER);
+        source.setPassword(PWD);
         source.setServerName("localhost");
         source.setPort(Integer.valueOf(PORT));
-        source.setDatabaseName("databasename");
+        source.setDatabaseName(DB);
         String name = new JdbcSession(source)
                 .sql("SELECT name FROM foo WHERE id = ?")
                 .set(123)
