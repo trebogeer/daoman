@@ -19,9 +19,20 @@ public class ITJCABITest extends MySQLTest {
         source.setServerName("localhost");
         source.setPort(Integer.valueOf(PORT));
         source.setDatabaseName(DB);
+
+        new JdbcSession(source)
+                .sql("CREATE TABLE foo (name VARCHAR(30))")
+                .execute();
+
+        final long id = new JdbcSession(source)
+                .sql("INSERT INTO foo (name) VALUES (?)")
+                .set("Jeff Lebowski")
+                //.set(35000)
+                .update(new SingleOutcome<Long>(Long.class));
+
         String name = new JdbcSession(source)
                 .sql("SELECT name FROM foo WHERE id = ?")
-                .set(123)
+                .set(id)
                 .select(new SingleOutcome<String>(String.class));
         System.out.println(name);
     }
