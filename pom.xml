@@ -52,6 +52,10 @@
         <jcabi.v>0.14</jcabi.v>
         <slf4j.v>1.7.5</slf4j.v>
         <jdk.v>1.7</jdk.v>
+
+        <mysql.test.user>daoman</mysql.test.user>
+        <mysql.test.pwd>daoman</mysql.test.pwd>
+        <mysql.test.db>daoman</mysql.test.db>
     </properties>
 
     <dependencyManagement>
