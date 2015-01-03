@@ -7,9 +7,6 @@ import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.util.StringMapper;
 import org.testng.annotations.Test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 /**
  * @author dimav
  *         Date: 12/26/14

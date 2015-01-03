@@ -7,10 +7,10 @@ package com.trebogeer.daoman;
  */
 final class Naming {
 
-    public static final String GETTER_PREFIX = "get";
+    public static final String GETTER_PREFIX = System.getProperty("daoman.get.prefix","get");
     public static final String BY = "_by_";
-    public static final String DAO = "DAO";
-    public static final String PACKAGE = "com.trebogeer.daoman.api.gen.";
+    public static final String DAO = System.getProperty("daoman.dao.class.postfix","DAO");
+    public static final String PACKAGE = System.getProperty("daoman.tld","com.trebogeer.daoman.api.gen.");
 
     private Naming() {
     }
