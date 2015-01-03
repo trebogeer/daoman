@@ -7,6 +7,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -68,6 +69,12 @@ public class DaoMan {
         }
         DaoMan daoMan = new DaoMan(cfg);
         daoMan.exec();
+
+        try{
+            AbandonedConnectionCleanupThread.shutdown();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void exec() {
@@ -127,15 +134,16 @@ public class DaoMan {
             for (String schema : procs.keySet()) {
 
                 con = getConnection(schema);
-                for (String sproc : procs.get(schema)) {
-                    rs = con.getMetaData().getProcedureColumns(schema, null, sproc, "%");
-                    while (rs.next()) {
-                        sprocParams.put(schema + '.' + sproc, new SQLParam(
-                                rs.getString(4),
-                                rs.getShort(5),
-                                rs.getInt(6),
-                                rs.getShort(12)));
-                    }
+                try {
+                    for (String sproc : procs.get(schema)) {
+                        rs = con.getMetaData().getProcedureColumns(schema, null, sproc, "%");
+                        while (rs.next()) {
+                            sprocParams.put(schema + '.' + sproc, new SQLParam(
+                                    rs.getString(4),
+                                    rs.getShort(5),
+                                    rs.getInt(6),
+                                    rs.getShort(12)));
+                        }
 //                    ResultSetMetaData rsmd = rs.getMetaData();
 //                    int rowcount = 0;
 //                    while (rs.next ()) {
@@ -147,10 +155,14 @@ public class DaoMan {
 //                        }
 //                    }
 
-                    JDBCUtil.close(rs);
+                        JDBCUtil.close(rs);
+                    }
+                } finally {
+                    if (con != null)
+                        JDBCUtil.close(con);
                 }
 
-                JDBCUtil.close(con);
+
             }
 
             Multimap<String, SQLParam> resultSets = LinkedListMultimap.create();
@@ -234,7 +246,10 @@ public class DaoMan {
                 } catch (SQLException e) {
                     System.out.println("Broken stored procedure: " + key);
                     e.printStackTrace(System.out);
-                }
+                }/*finally {
+                    if (con != null)
+                    JDBCUtil.close(con);
+                }*/
             }
 
             generateCode(procs.keySet(), sprocParams, resultSets);
@@ -242,6 +257,7 @@ public class DaoMan {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
+            if (con != null)
             JDBCUtil.close(con);
         }
     }
