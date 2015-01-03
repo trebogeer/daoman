@@ -154,15 +154,34 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>create-data</id>
+                        <id>schema</id>
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <orderFile>descending</orderFile>
+                            <delimiter>;</delimiter>
+                            <orderFile>ascending</orderFile>
                             <fileset>
-                                <basedir>${project.basedir}/../daoman-mysql/src/main/resources/</basedir>
+                                <basedir>${project.basedir}/../daoman-mysql/src/main/resources/schema</basedir>
+                                <!--includes>
+                                    <include>src/test/sql/test-data2.sql</include>
+                                    <include>src/test/sql/test-data1.sql</include>
+                                </includes-->
+                            </fileset>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stored-procedures</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <delimiter>$</delimiter>
+                            <orderFile>ascending</orderFile>
+                            <fileset>
+                                <basedir>${project.basedir}/../daoman-mysql/src/main/resources/sp/</basedir>
                                 <!--includes>
                                     <include>src/test/sql/test-data2.sql</include>
                                     <include>src/test/sql/test-data1.sql</include>

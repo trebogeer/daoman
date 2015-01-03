@@ -2,9 +2,9 @@
 -- CALL dinosaurs.get_dinosaurs(@err, 1);
 */
 
-DELIMITER $$
+--DELIMITER $
 
-DROP PROCEDURE IF EXISTS dinosaurs.get_dinosaur_name$$
+DROP PROCEDURE IF EXISTS dinosaurs.get_dinosaur_name$
 
 CREATE PROCEDURE dinosaurs.get_dinosaur_name(
   OUT error_code INT,
@@ -23,6 +23,6 @@ BEGIN
 
   SET error_code = 0;
 
-END$$
+END$
 
-DELIMITER ;
+--DELIMITER ;

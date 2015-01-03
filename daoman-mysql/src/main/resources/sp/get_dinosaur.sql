@@ -1,14 +1,15 @@
 /*
 -- CALL dinosaurs.get_dinosaurs(@err, 1);
 */
+-- uncomment delimiter to run through mysql command line client
+--DELIMITER $
 
-DELIMITER $$
+DROP PROCEDURE IF EXISTS dinosaurs.get_dinosaur$
 
-DROP PROCEDURE IF EXISTS dinosaurs.get_dinosaur_by_id$$
-
-CREATE PROCEDURE dinosaurs.get_dinosaur_by_id(
+CREATE PROCEDURE dinosaurs.get_dinosaur(
   OUT error_code INT,
-  IN id BIGINT
+  IN dheight DOUBLE,
+  IN dweiht DOUBLE
 )
 BEGIN
 
@@ -25,10 +26,10 @@ BEGIN
     discoveredLocation
   FROM
     dinosaurs.dinosaur
-  WHERE dinosaurId = id;
+  WHERE height = dheight AND weight = dweiht;
 
   SET error_code = 0;
 
-END$$
+END$
 
-DELIMITER ;
+--DELIMITER ;

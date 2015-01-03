@@ -55,7 +55,7 @@
 
         <mysql.test.user>daoman</mysql.test.user>
         <mysql.test.pwd>daoman</mysql.test.pwd>
-        <mysql.test.db>daoman</mysql.test.db>
+        <mysql.test.db>dinosaurs</mysql.test.db>
     </properties>
 
     <dependencyManagement>

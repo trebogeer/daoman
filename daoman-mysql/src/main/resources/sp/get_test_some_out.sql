@@ -2,9 +2,9 @@
 -- CALL dinosaurs.get_test_some_out(@err, 1);
 */
 
-DELIMITER $$
+--DELIMITER $
 
-DROP PROCEDURE IF EXISTS dinosaurs.get_test_some_out$$
+DROP PROCEDURE IF EXISTS dinosaurs.get_test_some_out$
 
 CREATE PROCEDURE dinosaurs.get_test_some_out(
   OUT error_code INT,
@@ -23,6 +23,6 @@ BEGIN
   SET test3 = "test3";
   SET test4 = "test4";
   SET test5 = 5;
-END$$
+END$
 
-DELIMITER ;
+--DELIMITER ;

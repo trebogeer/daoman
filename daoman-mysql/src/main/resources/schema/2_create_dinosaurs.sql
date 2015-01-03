@@ -1,3 +1,6 @@
+
+-- DELIMITER $$
+
 create database if not exists dinosaurs;
 
 use dinosaurs;
@@ -12,7 +15,7 @@ CREATE TABLE dinosaur (
   dinosaurFood varchar(40) default NULL,
   discoveredYear int(4) default NULL,
   discoveredLocation varchar(40) default NULL
-) ;
+);
 
 INSERT INTO dinosaur VALUES
 (1, 'Allosaurus', 5, 11, 1500, 'large dinosaurs', 1877, 'USA'),
