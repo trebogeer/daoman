@@ -15,7 +15,23 @@
     <name>daoman</name>
     <url>http://maven.apache.org</url>
 
-
+    <profiles>
+        <profile>
+            <id>ecommerce</id>
+            <properties>
+                <mysql.test.db>ecommerce</mysql.test.db>
+            </properties>
+        </profile>
+        <profile>
+            <id>dinosaurs</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <mysql.test.db>dinosaurs</mysql.test.db>
+            </properties>
+        </profile>
+    </profiles>
     <repositories>
         <repository>
             <id>maven2-repository.dev.java.net</id>

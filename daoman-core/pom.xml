@@ -198,7 +198,7 @@
                             <delimiter>$</delimiter>
                             <orderFile>ascending</orderFile>
                             <fileset>
-                                <basedir>${project.basedir}/../daoman-mysql/src/main/resources/sp/</basedir>
+                                <basedir>${project.basedir}/../daoman-mysql/src/main/resources/sp/${mysql.test.db}</basedir>
                                 <!--includes>
                                     <include>src/test/sql/test-data2.sql</include>
                                     <include>src/test/sql/test-data1.sql</include>
