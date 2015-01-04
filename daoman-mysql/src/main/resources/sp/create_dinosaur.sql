@@ -1,5 +1,5 @@
 /*
--- CALL dinosaurs.upsert_dinosaur(@err, 1);
+-- CALL dinosaurs.upsert_dinosaur(@err, @id, "Dino", 1.0, 1.0, 1.0, "food", 1784,"north pole");
 */
 -- uncomment delimiter to run through mysql command line client
 --DELIMITER $
