@@ -7,7 +7,6 @@
     <version>1.0.0</version>
     <modules>
         <module>daoman-sql</module>
-        <module>daoman-maven-plugin</module>
         <module>daoman-core</module>
         <module>daoman-gen</module>
         <module>daoman-mysql</module>

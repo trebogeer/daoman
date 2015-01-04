@@ -105,7 +105,7 @@ public class DaoMan {
                     rs = con.getMetaData().getProcedures(schema, null, null);
                     while (rs.next()) {
                         // skipping functions for now ,
-                        // need to process them separate
+                        // need to process them separately
                         if (rs.getInt(8) != 2)
                             procs.put(rs.getString(1), rs.getString(3));
                     }
@@ -172,7 +172,7 @@ public class DaoMan {
                 try {
                     String schema = getSchemaName(key);
                     String storedProc = getSPName(key);
-                    // TODO I should hit all stored procedures and ignore exceptions from modifiers
+                    // TODO May be should hit all stored procedures and ignore exceptions from modifiers
                     if (storedProc.startsWith(GETTER_PREFIX)) {
                         Connection connection = getConnection(schema);
                         CallableStatement stmt = null;
@@ -253,6 +253,7 @@ public class DaoMan {
             }
 
             generateCode(procs.keySet(), sprocParams, resultSets);
+            generateUnitTests(procs.keySet(), sprocParams, resultSets);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -260,6 +261,10 @@ public class DaoMan {
             if (con != null)
             JDBCUtil.close(con);
         }
+    }
+
+    private void generateUnitTests(Set<String> schemas, Multimap<String, SQLParam> storedProcedures, Multimap<String, SQLParam> resultSets) {
+        final JCodeModel codeModel = new JCodeModel();
     }
 
     private Connection getConnection(String schema) throws Exception {
