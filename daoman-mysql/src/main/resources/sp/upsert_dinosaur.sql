@@ -4,9 +4,9 @@
 -- uncomment delimiter to run through mysql command line client
 --DELIMITER $
 
-DROP PROCEDURE IF EXISTS dinosaurs.create_dinosaur$
+DROP PROCEDURE IF EXISTS dinosaurs.upsert_dinosaur$
 
-CREATE PROCEDURE dinosaurs.create_dinosaur(
+CREATE PROCEDURE dinosaurs.upsert_dinosaur(
   OUT error_code INT,
   INOUT id BIGINT,
   IN name VARCHAR(40),

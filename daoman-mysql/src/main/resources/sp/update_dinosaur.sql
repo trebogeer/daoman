@@ -1,12 +1,12 @@
 /*
--- CALL dinosaurs.upsert_dinosaur(@err, 1);
+-- CALL dinosaurs.update_dinosaur(@err, 1);
 */
 -- uncomment delimiter to run through mysql command line client
 --DELIMITER $
 
-DROP PROCEDURE IF EXISTS dinosaurs.create_dinosaur$
+DROP PROCEDURE IF EXISTS dinosaurs.update_dinosaur$
 
-CREATE PROCEDURE dinosaurs.create_dinosaur(
+CREATE PROCEDURE dinosaurs.update_dinosaur(
   OUT error_code INT,
   IN id BIGINT,
   IN name VARCHAR(40),
