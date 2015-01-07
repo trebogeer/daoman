@@ -228,8 +228,8 @@ public final class GenUtils {
         }
         // TODO produce return bean
         // continue;
-        // Current gen.a implementation does not support more than 3 out/inout parameters
-        // throw new XRuntime("Current gen.a implementation does not support more than 3 out/inout parameters");
+        // Current implementation does not support more than 3 out/inout parameters
+        // throw new XRuntime("Current implementation does not support more than 3 out/inout parameters");
         //      }
         return returnType;
     }
