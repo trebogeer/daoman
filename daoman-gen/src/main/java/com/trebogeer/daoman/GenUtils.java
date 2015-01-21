@@ -90,19 +90,7 @@ public final class GenUtils {
         }
 
         if (returnType != null) {
-            if (outParams.size() == 1) {
-                daoMethodBody._return(outs.get(0).invoke(GET_VALUE_DAO_MAN));
-            } else if (outParams.size() == 2) {
-                daoMethodBody._return(JExpr._new(returnType).arg(
-                        outs.get(0).invoke(GET_VALUE_DAO_MAN)).arg(
-                        outs.get(1).invoke(GET_VALUE_DAO_MAN)));
-            } else if (outParams.size() == 3) {
-                daoMethodBody._return(JExpr._new(returnType).arg(
-                        outs.get(0).invoke(GET_VALUE_DAO_MAN)).arg(
-                        outs.get(1).invoke(GET_VALUE_DAO_MAN)).arg(
-                        outs.get(2).invoke(GET_VALUE_DAO_MAN)));
-            } else if (outParams.size() > 3) {
-                // Generate model bean
+            if (outParams.size() > 0) {
                 JInvocation inv = JExpr._new(returnType);
                 for(JVar var : outs){
                     inv.arg(var.invoke(GET_VALUE_DAO_MAN));
@@ -172,7 +160,8 @@ public final class GenUtils {
         return outs;
     }
 
-    public static JType notCollectionReturnType(final Collection<SQLParam> outParams, final JCodeModel codeModel) {
+    public static JType notCollectionReturnType(final Collection<SQLParam> outParams, final JCodeModel codeModel, String sp, final String packageName,
+                                                final String schema) {
         JType returnType = null;
 //        List<Class<?> > params = getSQLParams(outParams.iterator());
 //        JClass ret = codeModel.ref(Decade.class);
@@ -198,33 +187,8 @@ public final class GenUtils {
             JClass ret = codeModel.ref(Triplet.class);
             returnType = ret.narrow(codeModel.ref(first.getJavaType()), codeModel.ref(second.getJavaType()), codeModel.ref(third.getJavaType()));
         } else {
-            JDefinedClass classResultDefinition = null;
-            try {
-                classResultDefinition = codeModel._class(JMod.PUBLIC, "OutClass", ClassType.CLASS);
-                JMethod constructor = classResultDefinition.constructor(JMod.PRIVATE);
-                JBlock constructorBody = constructor.body();
-                for (SQLParam column : outParams) {
-                    String colName = column.getTableName() != null ? column.getTableName() + "_" + column.getName() : column.getName();
-                    String fieldName = Naming.camelizedName(colName, false);
-                    String method = Naming.camelizedName(column.getName(), true);
-                    constructor.param(column.getJavaType(), fieldName);
-                    JFieldVar fld = classResultDefinition.field(JMod.PRIVATE, column.getJavaType(), fieldName);
-                    constructorBody.assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
-                    // getter
-                    JMethod getter = classResultDefinition.method(JMod.PUBLIC, column.getJavaType(), Naming.GETTER_PREFIX + method);
-
-                    getter.body()._return(JExpr._this().ref(fieldName));
-                    // setter
-                    JMethod setter = classResultDefinition.method(JMod.PUBLIC, Void.TYPE, "set" + method);
-                    setter.param(column.getJavaType(), fieldName);
-                    setter.body().assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
-                }
-            } catch (Exception ex) {
-                System.out.println(ex);
-                ex.printStackTrace();
-                throw new RuntimeException(ex);
-            }
-            returnType = classResultDefinition;
+            String modelClassName = Naming.getModelName(packageName, Naming.getSPName(sp), schema);
+            returnType = generateJDefinedClass(codeModel, modelClassName, outParams);
         }
         // TODO produce return bean
         // continue;
@@ -363,50 +327,50 @@ public final class GenUtils {
                 }
 
                 String modelClassName = Naming.getModelName(packageName, Naming.getSPName(shortestName(similarResultSetStoredProcedures)), schema);
-
                 JDefinedClass classResultDefinition = null;
                 try {
-                    classResultDefinition = codeModel._class(JMod.PUBLIC, modelClassName, ClassType.CLASS);
-                } catch (JClassAlreadyExistsException e) {
-                    System.out.println(modelClassName);
-                    e.printStackTrace();
-                }
-                for (String storedProc : similarResultSetStoredProcedures)
-                    storedProcToModel.put(storedProc, classResultDefinition);
-
-                JMethod constructor = classResultDefinition.constructor(JMod.PUBLIC);
-                JBlock constructorBody = constructor.body();
-                try {
-                    for (SQLParam column : finalResultSet) {
-                        String colName = column.getTableName() != null ? column.getTableName() + "_" + column.getName() : column.getName();
-                        String fieldName = Naming.camelizedName(colName, false);
-                        String method = Naming.camelizedName(column.getName(), true);
-                        constructor.param(column.getJavaType(), fieldName);
-                        JFieldVar fld = classResultDefinition.field(JMod.PRIVATE, column.getJavaType(), fieldName);
-                        constructorBody.assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
-                        // getter
-                        JMethod getter = classResultDefinition.method(JMod.PUBLIC, column.getJavaType(), Naming.GETTER_PREFIX + method);
-
-                        getter.body()._return(JExpr._this().ref(fieldName));
-                        // setter 
-                        JMethod setter = classResultDefinition.method(JMod.PUBLIC, Void.TYPE, "set" + method);
-                        setter.param(column.getJavaType(), fieldName);
-                        setter.body().assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
-                    }
+                    classResultDefinition = generateJDefinedClass(codeModel, modelClassName, finalResultSet);
+                    for (String storedProc : similarResultSetStoredProcedures)
+                        storedProcToModel.put(storedProc, classResultDefinition);
                 } catch (IllegalArgumentException ex) {
                     System.out.println(similarResultSetStoredProcedures);
                     ex.printStackTrace();
                     throw new RuntimeException(ex);
                 }
-
-
             }
         }
-
-
         return storedProcToModel;
     }
 
+    private static JDefinedClass generateJDefinedClass(final JCodeModel codeModel, final String modelClassName,
+                                                       final Collection<SQLParam> finalResultSet){
+        JDefinedClass classResultDefinition = null;
+        try {
+            classResultDefinition = codeModel._class(JMod.PUBLIC, modelClassName, ClassType.CLASS);
+            JMethod constructor = classResultDefinition.constructor(JMod.PUBLIC);
+            JBlock constructorBody = constructor.body();
+            for (SQLParam column : finalResultSet) {
+                String colName = column.getTableName() != null ? column.getTableName() + "_" + column.getName() : column.getName();
+                String fieldName = Naming.camelizedName(colName, false);
+                String method = Naming.camelizedName(column.getName(), true);
+                constructor.param(column.getJavaType(), fieldName);
+                JFieldVar fld = classResultDefinition.field(JMod.PRIVATE, column.getJavaType(), fieldName);
+                constructorBody.assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
+                // getter
+                JMethod getter = classResultDefinition.method(JMod.PUBLIC, column.getJavaType(), Naming.GETTER_PREFIX + method);
+
+                getter.body()._return(JExpr._this().ref(fieldName));
+                // setter
+                JMethod setter = classResultDefinition.method(JMod.PUBLIC, Void.TYPE, "set" + method);
+                setter.param(column.getJavaType(), fieldName);
+                setter.body().assign(JExpr._this().ref(fld), JExpr.ref(fieldName));
+            }
+        } catch (JClassAlreadyExistsException e) {
+            System.out.println(modelClassName);
+            e.printStackTrace();
+        }
+        return classResultDefinition;
+    }
 
     private static String shortestName(Collection<String> names) {
         int min = Integer.MAX_VALUE;

@@ -333,7 +333,7 @@ public class DaoMan {
                     });
                     // assuming that if a stored procedure has a list of output parameters it won't have a resultset
                     if (outParams.size() > 0) {
-                        returnType = notCollectionReturnType(outParams, codeModel);
+                        returnType = notCollectionReturnType(outParams, codeModel, sp, PACKAGE + app + ".", schema);
 
                     } else
                         // TODO better condition ?
